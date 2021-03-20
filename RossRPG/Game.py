@@ -72,3 +72,9 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == KEYDOWN:
+                # 加减速度
+                if event.key == K_x:
+                    self.role.speed = self.role.speed + 2
+                elif event.key == K_z:
+                    self.role.speed = self.role.speed - 2

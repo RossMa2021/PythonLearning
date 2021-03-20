@@ -146,25 +146,25 @@ class Player():
         kp=pygame.key.get_pressed()
         # kp 是定时轮询监视全键盘操作的结果，如有按下则会置为1
         # print(kp)
-        if kp[K_a]: # a 左
+        if kp[K_a] or kp[K_LEFT]: # a 左
             self.picnum+=1
             self.picnum=self.picnum%4
             if self.checkMoveRange(self.pos[0] - self.speed, self.pos[1]) == True:
                 self.pos[0]=self.pos[0]-self.speed
             self.pic=self.rl[self.picnum]
-        elif kp[K_d]: # d 右
+        elif kp[K_d] or kp[K_RIGHT]: # d 右
             self.picnum+=1
             self.picnum=self.picnum%4
             if self.checkMoveRange(self.pos[0] + self.speed, self.pos[1]) == True:
                 self.pos[0]=self.pos[0]+self.speed
             self.pic=self.rr[self.picnum]
-        elif kp[K_s]: # s 下
+        elif kp[K_s] or kp[K_DOWN]: # s 下
             self.picnum+=1
             self.picnum=self.picnum%4
             if self.checkMoveRange(self.pos[0], self.pos[1]+self.speed) == True:
                 self.pos[1]=self.pos[1]+self.speed
             self.pic=self.rd[self.picnum]
-        elif kp[K_w]: # w 上
+        elif kp[K_w] or kp[K_UP]: # w 上
             self.picnum+=1
             self.picnum=self.picnum%4
             if self.checkMoveRange(self.pos[0], self.pos[1]-self.speed) == True:
@@ -190,6 +190,7 @@ class Player():
             if keyup==K_s:
                 self.picnum=0
                 self.pic=self.sd
+
 
     def checkMoveRange(self, x, y):
         # 需要注意的是, x,y人物图片的左上角, 所以在最后右侧检测时要减去人物图的尺寸
