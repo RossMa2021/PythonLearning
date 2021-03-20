@@ -137,37 +137,37 @@ class Player():
         self.ru=[self.ru0,self.ru1,self.ru2,self.ru3]
         self.rr=[self.rr0,self.rr1,self.rr2,self.rr3]
         self.rl=[self.rl0,self.rl1,self.rl2,self.rl3]
-        self.pos=[320,160] #初始化人物位置
-        self.speed=5 #初始化人物移动速度
+        self.pos=[0,300] #初始化人物位置
+        self.speed=4 #初始化人物移动速度
         self.pic=self.sd #初始化人物图像
         self.picnum = 0
 
-    def move(self):
+    def moveControl(self):
         kp=pygame.key.get_pressed()
         # kp 是定时轮询监视全键盘操作的结果，如有按下则会置为1
         # print(kp)
         if kp[K_a]: # a 左
             self.picnum+=1
             self.picnum=self.picnum%4
-            if self.checkMove(self.pos[0] - self.speed, self.pos[1]) == True:
+            if self.checkMoveRange(self.pos[0] - self.speed, self.pos[1]) == True:
                 self.pos[0]=self.pos[0]-self.speed
             self.pic=self.rl[self.picnum]
         elif kp[K_d]: # d 右
             self.picnum+=1
             self.picnum=self.picnum%4
-            if self.checkMove(self.pos[0] + self.speed, self.pos[1]) == True:
+            if self.checkMoveRange(self.pos[0] + self.speed, self.pos[1]) == True:
                 self.pos[0]=self.pos[0]+self.speed
             self.pic=self.rr[self.picnum]
         elif kp[K_s]: # s 下
             self.picnum+=1
             self.picnum=self.picnum%4
-            if self.checkMove(self.pos[0], self.pos[1]+self.speed) == True:
+            if self.checkMoveRange(self.pos[0], self.pos[1]+self.speed) == True:
                 self.pos[1]=self.pos[1]+self.speed
             self.pic=self.rd[self.picnum]
         elif kp[K_w]: # w 上
             self.picnum+=1
             self.picnum=self.picnum%4
-            if self.checkMove(self.pos[0], self.pos[1]-self.speed) == True:
+            if self.checkMoveRange(self.pos[0], self.pos[1]-self.speed) == True:
                 self.pos[1]=self.pos[1]-self.speed
             self.pic=self.ru[self.picnum]
         # 如果抬起了键盘，显示站立状态
@@ -191,13 +191,15 @@ class Player():
                 self.picnum=0
                 self.pic=self.sd
 
-    def checkMove(self, x, y):
-        x = int(x / 32) + 1  # 格子数
-        y = int(y / 32) + 1
-        # 越界检测
-        if x < 0 or x > self.map2d.w - 1 or y < 0 or y > self.map2d.h - 1:
+    def checkMoveRange(self, x, y):
+        # 需要注意的是, x,y人物图片的左上角, 所以在最后右侧检测时要减去人物图的尺寸
+        # 边缘检测
+        if x < 0 or y < 0 or x > self.map2d.width - 32 or (y > self.map2d.height - 32):
             return False
-        # 如果是障碍，就忽略
-        if self.map2d[x][y] == 1:
-            return False
+        # 转换为格子坐标, 根据角色实际调整
+        pX = int(x / 32 + 0.5)
+        pY = int(y / 32) + 1
+        # 障碍检测
+        if self.map2d[pX][pY] == 1:
+           return False
         return True

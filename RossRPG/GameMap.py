@@ -37,13 +37,17 @@ class GameMap(Array2D):
         :param x: 起始位置x
         :param y: 起始位置y
         """
-        w = int(bottom.get_width() / 32) + 1 #格子数
+        w = int(bottom.get_width() / 32 ) + 1 #格子数
         h = int(top.get_height() / 32) + 1
+
         super().__init__(w, h)
         self.bottom = bottom
         self.top = top
         self.x = x
         self.y = y
+        # 绝对宽高
+        self.width = bottom.get_width()
+        self.height= bottom.get_height()
 
     def draw_bottom(self, screen_surf):
         screen_surf.blit(self.bottom, (self.x, self.y))
@@ -60,6 +64,7 @@ class GameMap(Array2D):
                 else:
                     pygame.draw.rect(screen_surf, (0, 0, 0, 100), (self.x + x * 32 + 1, self.y + y * 32 + 1, 30, 30), 0)
 
+    # 图片滚动
     def roll(self, role_x, role_y, WIN_WIDTH=640, WIN_HEIGHT=480):
         """
         地图滚动
@@ -88,4 +93,4 @@ class GameMap(Array2D):
                 for y in range(self.h):
                     v = int(file.readline())
                     self[x][y] = v
-        # self.show_array2d()
+        self.show_array2d()

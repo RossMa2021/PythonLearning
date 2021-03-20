@@ -44,28 +44,29 @@ class Game:
     def update(self):
         while True:
             self.clock.tick(self.fps)
-            # TODO:逻辑更新
             self.event_handler()
-            # TODO:画面更新
+            '''地图相关'''
+            # 地图滚动: 根据角色位置调整地图显示其实位置,体现在
+            self.game_map.roll(self.role.pos[0], self.role.pos[1])
             # 绘制背景
             self.game_map.draw_bottom(self.screen_surf)
+            #绘制障碍
+            # self.game_map.draw_grid(self.screen_surf)
+            '''人物相关'''
             # 绘制人物固定位置
             # Sprite.drawAbs(self.screen_surf, self.hero, 100, 100, 3, 4, 42, 42)
-            # Sprite.drawAbs(self.screen_surf, self.hero, 210, 120, 3, 4, 42, 42)
-            # Sprite.drawAbs(self.screen_surf, self.hero, 300, 100, 3, 4, 42, 42)
             # 绘制人物动态位置
-            self.game_map.draw_grid(self.screen_surf)
-            role_rect = self.role.pic.get_rect()
-            self.game_map.roll(self.role.pos[0], self.role.pos[1])
+            role_rect = self.role.pic.get_rect() # role_rect (x,y,w,h)
+            # 人物显示位置根据地图滚动后的起始差值需要变化
             self.screen_surf.blit(pygame.transform.smoothscale(self.role.pic, (int(role_rect[2]) * 1, int(role_rect[3]) * 1)),
-                        (self.role.pos[0], self.role.pos[1]))
+                        (self.role.pos[0] + self.game_map.x, self.role.pos[1] + self.game_map.y))
             # 绘制前景
             self.game_map.draw_top(self.screen_surf)
-
-            self.role.move()  # 任务角色移动 通过键盘
-
+            '''检测动作相关'''
+            # 监听人物位置变更
+            self.role.moveControl()  # 任务角色移动 通过键盘
+            # 定时刷新画面
             pygame.display.update()
-
 
     def event_handler(self):
         for event in pygame.event.get():
