@@ -4,6 +4,10 @@ from pygame.locals import*
 from PicSplit import Sprite     # 图片分割
 from GameMap import GameMap     # 地图控制
 from Action import Player       # 角色动态
+from TextPanel import TextPanel
+
+white = (255,255,255)
+black = (0,0,0)
 
 # 具体的游戏业务类
 class Game:
@@ -40,6 +44,10 @@ class Game:
         self.game_map = GameMap(self.map_bottom, self.map_top, 0, 0)
         self.game_map.load_walk_file('./img/map/0.map')
         self.role = Player(self.game_map)  # 初始化角色
+        # 对话框
+        self.textPanel = TextPanel()
+        self.textPanel_bottom = pygame.image.load('./img/map/textPanel.png').convert_alpha()
+        self.isShowTextPanel = False
 
     def update(self):
         while True:
@@ -60,11 +68,19 @@ class Game:
             # 人物显示位置根据地图滚动后的起始差值需要变化
             self.screen_surf.blit(pygame.transform.smoothscale(self.role.pic, (int(role_rect[2]) * 1, int(role_rect[3]) * 1)),
                         (self.role.pos[0] + self.game_map.x, self.role.pos[1] + self.game_map.y))
+
             # 绘制前景
             self.game_map.draw_top(self.screen_surf)
             '''检测动作相关'''
             # 监听人物位置变更
             self.role.moveControl()  # 任务角色移动 通过键盘
+
+            # 显示文本框
+            if(self.isShowTextPanel == True):
+                self.screen_surf.blit(pygame.transform.smoothscale(self.textPanel_bottom, (610, 100)),(0,300))
+                self.font = pygame.font.SysFont('SimHei', 17)
+                self.screen_surf.blit(self.font.render('故事开始!', True, (0, 0, 0)), (20, 310))
+
             # 定时刷新画面
             pygame.display.update()
 
@@ -78,3 +94,6 @@ class Game:
                     self.role.speed = self.role.speed + 2
                 elif event.key == K_z:
                     self.role.speed = self.role.speed - 2
+                elif event.key == K_SPACE:
+                    self.isShowTextPanel = not self.isShowTextPanel
+                    print("AAAA")
