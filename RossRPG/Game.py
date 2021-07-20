@@ -9,6 +9,8 @@ from TextPanel import TextPanel
 white = (255,255,255)
 black = (0,0,0)
 
+
+
 # 具体的游戏业务类
 class Game:
     def __init__(self, title, width, height, fps=60):
@@ -45,9 +47,11 @@ class Game:
         self.game_map.load_walk_file('./img/map/0.map')
         self.role = Player(self.game_map)  # 初始化角色
         # 对话框
-        self.textPanel = TextPanel()
         self.textPanel_bottom = pygame.image.load('./img/map/textPanel.png').convert_alpha()
-        self.isShowTextPanel = False
+        self.textPanel = TextPanel(self.textPanel_bottom,self.game_map.posNPC)
+        # NPC
+        self.role_NPC_0 = pygame.image.load('./img/character/1-1.png').convert_alpha()
+        self.role_NPC_1 = pygame.image.load('./img/character/1-1.png').convert_alpha()
 
     def update(self):
         while True:
@@ -62,12 +66,17 @@ class Game:
             # self.game_map.draw_grid(self.screen_surf)
             '''人物相关'''
             # 绘制人物固定位置
-            # Sprite.drawAbs(self.screen_surf, self.hero, 100, 100, 3, 4, 42, 42)
+            # 角色1
+            Sprite.drawAbs(self.screen_surf, self.role_NPC_0, self.game_map.posNPC[0][0] + self.game_map.x, self.game_map.posNPC[0][1] + self.game_map.y, 0, 0, 32, 30)
+            Sprite.drawAbs(self.screen_surf, self.role_NPC_1, self.game_map.posNPC[1][0] + self.game_map.x, self.game_map.posNPC[1][1] + self.game_map.y, 0, 0, 32, 30)
             # 绘制人物动态位置
             role_rect = self.role.pic.get_rect() # role_rect (x,y,w,h)
             # 人物显示位置根据地图滚动后的起始差值需要变化
             self.screen_surf.blit(pygame.transform.smoothscale(self.role.pic, (int(role_rect[2]) * 1, int(role_rect[3]) * 1)),
                         (self.role.pos[0] + self.game_map.x, self.role.pos[1] + self.game_map.y))
+
+            # 检查如果人物在npc附近
+            self.textPanel.set_Map_NPC_Seq(0,abs(self.role.pos[0]),abs(self.role.pos[1]))
 
             # 绘制前景
             self.game_map.draw_top(self.screen_surf)
@@ -76,10 +85,8 @@ class Game:
             self.role.moveControl()  # 任务角色移动 通过键盘
 
             # 显示文本框
-            if(self.isShowTextPanel == True):
-                self.screen_surf.blit(pygame.transform.smoothscale(self.textPanel_bottom, (610, 100)),(0,300))
-                self.font = pygame.font.SysFont('SimHei', 17)
-                self.screen_surf.blit(self.font.render('故事开始!', True, (0, 0, 0)), (20, 310))
+            if(self.textPanel.isShowTextPanel == True):
+                self.textPanel.draw_textLoop(self.screen_surf)
 
             # 定时刷新画面
             pygame.display.update()
@@ -94,6 +101,8 @@ class Game:
                     self.role.speed = self.role.speed + 2
                 elif event.key == K_z:
                     self.role.speed = self.role.speed - 2
-                elif event.key == K_SPACE:
-                    self.isShowTextPanel = not self.isShowTextPanel
-                    print("AAAA")
+                elif event.key == K_SPACE or event.key == K_n:
+                    self.textPanel.isShowTextPanel = not self.textPanel.isShowTextPanel
+                    print('K_SPACE')
+                elif event.key == K_m:   # 功能键 下一句话或者
+                    self.textPanel.draw_NextText()

@@ -48,6 +48,8 @@ class GameMap(Array2D):
         # 绝对宽高
         self.width = bottom.get_width()
         self.height= bottom.get_height()
+        # NPC坐标数组 后续增加文件导入功能
+        self.posNPC = [[380, 310], [600, 120]]
 
     def draw_bottom(self, screen_surf):
         screen_surf.blit(self.bottom, (self.x, self.y))
@@ -93,4 +95,4 @@ class GameMap(Array2D):
                 for y in range(self.h):
                     v = int(file.readline())
                     self[x][y] = v
-        self.show_array2d()
+        #self.show_array2d()
