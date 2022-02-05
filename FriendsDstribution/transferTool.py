@@ -20,7 +20,7 @@ def parseJson(jsonCont):
     return result_json
 
 def transferAddToPos(address, city, name):
-    strUrl = 'https://restapi.amap.com/v3/geocode/geo?key=3ba688fc381e18212795b64f22c92e3e&'
+    strUrl = 'https://restapi.amap.com/v3/geocode/geo?key=xxxxxxxxxxxxx&'
     strAdd = 'address='+address
     strCity = 'city='+city
     strUrl = strUrl + strAdd + strCity
